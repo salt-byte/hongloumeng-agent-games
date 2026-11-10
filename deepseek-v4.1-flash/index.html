@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d1b15">
+<meta name="description" content="《红楼梦》第四十回改编的叙事探索游戏：随刘姥姥游大观园，赴两宴，行牙牌令。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%239d2d27'/%3E%3Ctext x='50' y='71' font-size='58' text-anchor='middle' fill='%23f5e6c8'%3E%E7%A7%8B%3C/text%3E%3C/svg%3E">
+<title>秋园行 · 红楼梦第四十回</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <canvas id="game" width="1280" height="720" aria-label="大观园游戏画面"></canvas>
+
+    <!-- 常驻界面 -->
+    <div id="hud" class="hidden">
+      <div class="hud-left">
+        <div class="chapter-seal" id="chapter-seal">一</div>
+        <div>
+          <div class="chapter-name" id="chapter-name">第一折 · 沁芳亭</div>
+          <div class="objective" id="objective">陪老太太在园中逛逛</div>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="stat" title="情分：园中人对你的亲近">
+          <span class="stat-label">情分</span><span class="stat-value" id="stat-rapport">2</span>
+        </div>
+        <div class="stat" title="体面：你留给自己的分寸">
+          <span class="stat-label">体面</span><span class="stat-value" id="stat-dignity">2</span>
+        </div>
+        <button id="map-btn" class="ink-btn small" type="button">园图 <kbd>M</kbd></button>
+      </div>
+      <div id="toast" class="toast"></div>
+    </div>
+
+    <!-- 交互提示 -->
+    <div id="prompt" class="prompt hidden"><span class="key">E</span><span id="prompt-text">交谈</span></div>
+
+    <!-- 对话框 -->
+    <div id="dialogue" class="dialogue hidden" aria-live="polite">
+      <div class="portrait-wrap">
+        <canvas id="portrait" width="196" height="236"></canvas>
+        <div class="portrait-seal" id="portrait-seal">刘</div>
+      </div>
+      <div class="dialogue-main">
+        <div class="speaker-row">
+          <span class="speaker-name" id="speaker-name">刘姥姥</span>
+          <span class="speaker-role" id="speaker-role"></span>
+        </div>
+        <div class="dialogue-text" id="dialogue-text"></div>
+        <div class="dialogue-hint"><span>点击 / 空格 继续</span><span class="hint-mark">◆</span></div>
+      </div>
+    </div>
+
+    <!-- 选择 -->
+    <div id="choice-panel" class="choice-panel hidden">
+      <div class="choice-head">
+        <span class="choice-kicker">此刻，你如何应</span>
+        <span class="choice-scene" id="choice-scene">沁芳亭</span>
+      </div>
+      <div class="choice-prompt" id="choice-prompt"></div>
+      <div class="choice-list" id="choice-list"></div>
+      <div class="choice-foot">按 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 选择 · 每个选择都会留下痕迹</div>
+    </div>
+
+    <!-- 园图 -->
+    <div id="map-overlay" class="overlay hidden">
+      <div class="map-card">
+        <div class="map-title">大观园图</div>
+        <div class="map-sub">秋日游园 · 按 <kbd>M</kbd> 或 <kbd>Esc</kbd> 收起</div>
+        <div class="map-canvas-wrap">
+          <canvas id="map-canvas" width="880" height="420"></canvas>
+          <div id="map-nodes"></div>
+        </div>
+        <div class="map-note">已到过的院落，可以再走一走。点选节点前往。</div>
+      </div>
+    </div>
+
+    <!-- 标题 -->
+    <div id="title-screen" class="overlay title-screen">
+      <div class="title-copy">
+        <div class="title-side">
+          <span class="title-seal">秋<br>园<br>行</span>
+        </div>
+        <div class="title-main">
+          <div class="book-name">红楼梦</div>
+          <div class="chapter-no">第 四 十 回</div>
+          <h1 class="chapter-title">史太君两宴大观园</h1>
+          <h2 class="chapter-title second">金鸳鸯三宣牙牌令</h2>
+          <p class="title-tagline">一园秋色，半日清欢。<br>你走进画里，也走进一场笑。</p>
+          <button id="start-btn" class="seal-btn" type="button"><span>入 园</span><small>从刘姥姥的眼中看这一日</small></button>
+          <div class="title-meta">叙事探索 · 约 20 分钟 · 键盘 / 鼠标</div>
+        </div>
+      </div>
+      <div class="title-footer">据曹雪芹《红楼梦》第四十回改编 · 所有画面由代码绘制</div>
+    </div>
+
+    <!-- 引子 -->
+    <div id="intro-screen" class="overlay hidden">
+      <div class="intro-card">
+        <div class="intro-kicker">引 子</div>
+        <h2>清早 · 大观园</h2>
+        <div class="intro-divider"></div>
+        <p>露水未干，你带着板儿，跟着丰儿进了大观园。老太太说，今日要给湘云姑娘还席，也叫你热闹一天。</p>
+        <p>你一辈子没进过这样的园子。园里的太太姑娘们待你客气，也拿你取笑。你心里明白：这一日，既要让老太太尽兴，也不能叫自己成了个任人取笑的笑话。</p>
+        <p class="intro-goal">你想：先陪老太太在园里走走，看看这画儿一样的地方。</p>
+        <div class="intro-controls">
+          <span><kbd>W A S D</kbd> / <kbd>方向键</kbd> 行走</span>
+          <span><kbd>E</kbd> / <kbd>空格</kbd> 交谈</span>
+          <span><kbd>M</kbd> 园图</span>
+          <span>鼠标 点击地面 / 人物</span>
+        </div>
+        <button id="intro-btn" class="seal-btn" type="button"><span>随丰儿入园</span></button>
+      </div>
+    </div>
+
+    <!-- 结局 -->
+    <div id="ending-screen" class="overlay hidden">
+      <div class="ending-card">
+        <div class="ending-kicker" id="ending-kicker">结 局</div>
+        <h1 id="ending-title">尽兴而归</h1>
+        <div class="ending-rule"></div>
+        <p class="ending-text" id="ending-text"></p>
+        <div class="ending-quote" id="ending-quote"></div>
+        <div class="ending-summary" id="ending-summary"></div>
+        <div class="ending-actions">
+          <button id="ending-restart" class="seal-btn" type="button"><span>再游一园</span></button>
+          <button id="ending-title" class="ink-btn" type="button">回到标题</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 暂停 -->
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="pause-card">
+        <div class="pause-title">暂 歇</div>
+        <p>园中光阴还等着你。</p>
+        <div class="pause-actions">
+          <button id="resume-btn" class="seal-btn" type="button"><span>继续游园</span></button>
+          <button id="restart-btn" class="ink-btn" type="button">重新开始</button>
+          <button id="quit-btn" class="ink-btn" type="button">回到标题</button>
+        </div>
+        <div class="pause-help">WASD / 方向键行走 · E / 空格 交谈 · M 园图 · Esc 暂停</div>
+      </div>
+    </div>
+
+    <!-- 章节标题过场 -->
+    <div id="chapter-flash" class="chapter-flash hidden">
+      <div class="flash-rule"></div>
+      <div class="flash-no" id="flash-no">第一折</div>
+      <div class="flash-title" id="flash-title">沁芳亭</div>
+      <div class="flash-sub" id="flash-sub">一园秋色</div>
+      <div class="flash-rule"></div>
+    </div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>

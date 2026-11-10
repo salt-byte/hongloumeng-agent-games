@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>红楼梦 · 第四十回 · 大观园行</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="1280" height="720"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="hudTop">
+      <div id="chapter">第四十回 · 史太君两宴大观园　金鸳鸯三宣牙牌令</div>
+      <div id="location">大观楼前</div>
+      <div id="progress">第 1 / 7 景</div>
+    </div>
+    <div id="objective"></div>
+    <div id="banner"></div>
+    <div id="hint"></div>
+  </div>
+
+  <!-- 标题画面 -->
+  <div id="titleScreen" class="overlay">
+    <div class="titleCard">
+      <div class="titleKicker">叙事探索 · 游戏片段 · 改编自曹雪芹原著</div>
+      <h1 class="titleMain">红楼梦</h1>
+      <h2 class="titleSub">第四十回</h2>
+      <div class="titleChapter">史太君两宴大观园　金鸳鸯三宣牙牌令</div>
+      <div class="titleLine"></div>
+      <button id="startBtn" class="btnPrimary">开 始</button>
+      <div class="titleHelp">操作：← → / A D 行走　·　E / 空格 交谈与继续　·　鼠标可点选</div>
+    </div>
+  </div>
+
+  <!-- 引子 -->
+  <div id="introScreen" class="overlay hidden">
+    <div class="parchmentCard">
+      <h3 class="parchmentTitle">引 子</h3>
+      <p>话说荣国府大观园里，这日天气清朗。贾母要给史湘云还席，席面就摆在园中，又留下乡下来的刘姥姥热闹一天。</p>
+      <p>你便是那刘姥姥，带着外孙板儿，天不亮就进了园子。你心里惦记着一件事——这一趟，既想开开眼界，也盼着老太太、太太们欢喜，往后好照应你们乡下的一家子。</p>
+      <p class="parchmentAccent">—— 你的一言一行，都关系着这一日的冷与暖。</p>
+      <button id="enterBtn" class="btnPrimary">走进大观园</button>
+    </div>
+  </div>
+
+  <!-- 对话框 -->
+  <div id="dialogueBox" class="hidden">
+    <canvas id="portrait" width="132" height="148"></canvas>
+    <div id="dialogueBody">
+      <div id="speakerName"></div>
+      <div id="dialogueText"></div>
+      <div id="dialogueAdvance">空格 / 点击 继续 ▸</div>
+    </div>
+  </div>
+
+  <!-- 选择 -->
+  <div id="choiceBox" class="hidden">
+    <div id="choicePrompt"></div>
+    <div id="choiceOptions"></div>
+  </div>
+
+  <!-- 结局 -->
+  <div id="endingScreen" class="overlay hidden">
+    <div class="parchmentCard endingCard">
+      <div id="endingTag"></div>
+      <h3 id="endingTitle" class="parchmentTitle"></h3>
+      <div id="endingBody"></div>
+      <button id="restartBtn" class="btnPrimary">回到标题</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/game.js"></script>
+</body>
+</html>

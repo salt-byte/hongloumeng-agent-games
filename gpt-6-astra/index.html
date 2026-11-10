@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>画里人家 · 红楼梦第四十回</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main id="game" aria-label="画里人家，叙事探索游戏">
+<canvas id="world" width="1280" height="720" aria-label="可行走的大观园场景"></canvas>
+<div id="grain"></div>
+<section id="title" class="screen">
+ <div class="title-panel"><div class="edition">一 日 游 园 · 一 席 人 情</div><div class="book">曹雪芹《红楼梦》</div><h1>画里<span>人家</span></h1><div class="red-seal">第四十回</div><div class="chapter">史太君两宴大观园<br>金鸳鸯三宣牙牌令</div><p class="title-desc">走进画里，也走进满园的笑声。<br>今日，你是刘姥姥。</p><button id="start" class="primary">入 园 <span>→</span></button><button id="resume" class="quiet hidden">续上这一日</button><div class="title-foot">叙事探索 · 五处园景 · 约十五分钟</div></div>
+ <div class="title-verse">谁知我今儿进这园一瞧<br>竟比那画儿还强十倍</div><button id="about" class="title-about">游玩须知</button>
+</section>
+<header id="hud" class="hidden"><div class="brand">画里人家 <small>红楼梦 · 肆拾</small></div><div id="chapter-label"></div><nav><button id="journal-button">见闻 <span>J</span></button><button id="map-button">园图 <span>M</span></button><button id="menu-button" aria-label="暂停游戏">☰</button></nav></header>
+<section id="objective" class="hidden"><span id="act"></span><h2 id="place"></h2><p id="task"></p></section>
+<div id="location-flash"></div><div id="toast" role="status"></div>
+<button id="interact" class="hidden"></button>
+<footer id="footer" class="hidden"><div><span class="key">W A S D</span> / 方向键 行走 <i>·</i> 点击地面前往 <i>·</i> <span class="key">E</span> 交谈</div><div id="footer-state">一头秋色，半日清闲</div></footer>
+<section id="dialogue" class="hidden" aria-live="polite"><div class="portrait-wrap"><canvas id="portrait" width="170" height="190"></canvas><span id="speaker-role"></span></div><div class="dialogue-body"><div class="dialogue-heading"><h3 id="speaker"></h3><span id="dialogue-tag"></span></div><p id="line"></p><div id="answers"></div></div></section>
+<div id="modal" class="hidden"><section id="modal-card"></section></div>
+<section id="ending" class="screen hidden"><div class="ending-panel"><div class="edition">大 观 园 · 一 日 终</div><div id="ending-type"></div><h1 id="ending-title"></h1><p id="ending-text"></p><div id="ending-memory"></div><div class="ending-buttons"><button id="restart" class="primary">再入画中 →</button><button id="ending-journal" class="quiet">回看这一日</button></div><small>本片段止于第四十回。园外的喧声，留待下回。</small></div></section>
+</main><script src="game.js"></script></body></html>
