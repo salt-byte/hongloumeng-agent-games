@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <meta name="theme-color" content="#172d29">
+  <title>红楼梦 · 第四十回｜一场笑语，一分分寸</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="stage" aria-label="红楼梦第四十回叙事探索游戏">
+    <canvas id="game-canvas" width="1280" height="720" aria-label="大观园游戏场景"></canvas>
+
+    <section id="title-screen" class="screen">
+      <div class="title-wash"></div>
+      <div class="title-copy">
+        <div class="eyebrow">曹雪芹 · 章回叙事探索</div>
+        <h1>红楼梦</h1>
+        <div class="title-rule"><span></span><i>第四十回</i><span></span></div>
+        <h2>史太君两宴大观园<br>金鸳鸯三宣牙牌令</h2>
+        <p class="title-poem">一场笑语，一分分寸。</p>
+        <div class="title-actions">
+          <button id="start-button" class="brush-button primary">启程入园 <b>›</b></button>
+          <button id="jump-button" class="brush-button ghost">片段跳转</button>
+        </div>
+        <p class="title-note">扮演鸳鸯 · 六处园景 · 五种分寸 · 三个结局</p>
+      </div>
+      <div class="title-seal">鸳<br>鸯</div>
+      <div class="title-footer">键盘 / 鼠标可玩　·　建议 1280 × 720　·　本作无音频</div>
+    </section>
+
+    <section id="intro-screen" class="screen hidden">
+      <div class="intro-card">
+        <div class="eyebrow">第四十回 · 改编片段</div>
+        <div class="intro-date">秋日清晨 · 大观园</div>
+        <h2>你是鸳鸯。</h2>
+        <p>贾母身边得用的大丫鬟，今日既要照管园中席面，也要替众人主持酒令。</p>
+        <p>刘姥姥被留在园里热闹一日。众人想逗老太太开心，你却站在玩笑与体面之间。</p>
+        <blockquote>让老祖宗尽兴，也让这一日过得妥帖。</blockquote>
+        <button id="intro-button" class="brush-button primary">随老太太入园</button>
+        <small>你的选择会改变席间反应与最终结局</small>
+      </div>
+    </section>
+
+    <header id="hud" class="hidden">
+      <div class="hud-chapter"><span id="act-number">第一幕</span><strong id="act-name">园中画</strong></div>
+      <div class="hud-objective"><span>此刻要做</span><strong id="objective-text">见过贾母</strong></div>
+      <div id="progress-dots" class="progress-dots" aria-label="游园进度"></div>
+      <button id="map-button" class="hud-button" title="园图（M）">园图 <kbd>M</kbd></button>
+      <button id="pause-button" class="hud-button" title="回到标题">卷首</button>
+    </header>
+
+    <div id="scene-caption" class="scene-caption hidden"><span></span><h2></h2><p></p></div>
+    <div id="toast" class="toast hidden"></div>
+    <div id="interact-prompt" class="interact-prompt hidden"><kbd>E</kbd><span></span></div>
+    <div id="control-hint" class="control-hint hidden">WASD / 方向键 行走　·　点击地面前往　·　E 交谈　·　M 园图</div>
+
+    <section id="dialogue" class="dialogue hidden" aria-live="polite">
+      <div class="portrait-frame"><canvas id="portrait" width="120" height="136"></canvas><span id="portrait-seal"></span></div>
+      <div class="dialogue-body">
+        <div class="speaker-row"><h3 id="speaker-name"></h3><span id="speaker-role"></span></div>
+        <p id="dialogue-text"></p>
+        <div id="choices" class="choices hidden"></div>
+        <div id="continue-hint" class="continue-hint">点击 / 空格 继续 <b>⌄</b></div>
+      </div>
+    </section>
+
+    <section id="map-overlay" class="modal hidden">
+      <div class="paper-panel map-panel">
+        <button class="close-button" data-close="map" aria-label="关闭">×</button>
+        <div class="eyebrow">大观园行迹</div>
+        <h2>今日游园图</h2>
+        <p id="map-objective"></p>
+        <div id="map-route" class="map-route"></div>
+        <div class="map-legend"><span><i class="dot current"></i>所在</span><span><i class="dot open"></i>可往</span><span><i class="dot locked"></i>未至</span></div>
+        <p class="small-note">点击已开启的地点即可前往；故事物品与选择会记入各景小签。</p>
+        <div id="choice-journal" class="choice-journal"></div>
+      </div>
+    </section>
+
+    <section id="jump-overlay" class="modal hidden">
+      <div class="paper-panel jump-panel">
+        <button class="close-button" data-close="jump" aria-label="关闭">×</button>
+        <div class="eyebrow">评阅与重游</div>
+        <h2>片段跳转</h2>
+        <p>直接进入选择或结局；所有画面与牌序均为固定结果。</p>
+        <div id="jump-list" class="jump-list"></div>
+        <p class="small-note">亦可使用网址后缀，例如 <code>#jump=c2</code>。</p>
+      </div>
+    </section>
+
+    <section id="cards-overlay" class="screen hidden">
+      <div class="cards-panel">
+        <div class="cards-heading"><div><span>缀锦阁 · 骨牌副儿</span><h2>金鸳鸯三宣牙牌令</h2></div><div class="rule-chip">酒令大如军令<br><b>惟我是主</b></div></div>
+        <p id="card-rule">无论诗词歌赋、成语俗话，比上一句，都要叶韵。错了，罚一杯。</p>
+        <canvas id="domino-canvas" width="860" height="190"></canvas>
+        <div class="card-speaker-row"><span id="card-round">第一副 · 贾母</span><strong id="card-speaker">鸳鸯</strong></div>
+        <p id="card-text"></p>
+        <div id="card-choices" class="card-choices hidden"></div>
+        <button id="card-next" class="brush-button primary">宣下一张 <b>›</b></button>
+        <div id="card-progress" class="card-progress"></div>
+      </div>
+    </section>
+
+    <section id="ending-screen" class="screen hidden">
+      <div class="ending-wash"></div>
+      <div class="ending-copy">
+        <div id="ending-kicker" class="eyebrow"></div>
+        <h2 id="ending-title"></h2>
+        <p id="ending-quote" class="ending-quote"></p>
+        <div id="ending-body"></div>
+        <div id="ending-ledger" class="ending-ledger"></div>
+        <div class="ending-actions">
+          <button id="restart-button" class="brush-button primary">再游一回</button>
+          <button id="ending-title-button" class="brush-button ghost">回到卷首</button>
+        </div>
+        <small>红楼梦 · 第四十回　/　改编片段完</small>
+      </div>
+    </section>
+  </main>
+  <script src="art.js"></script>
+  <script src="story.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
