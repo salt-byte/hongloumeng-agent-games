@@ -1,0 +1,94 @@
+[
+ {
+  "agent": "codex",
+  "agent_version": "0.167.0",
+  "model": "gpt-6-astra",
+  "metrics": {
+   "total_prompt_tokens": 911371,
+   "total_completion_tokens": 39283,
+   "total_cost_usd": 3.0864360000000004,
+   "total_steps": 24
+  },
+  "slug": "gpt-6-astra",
+  "label": "GPT-6 Astra（Codex）",
+  "steps": 24,
+  "images": 5,
+  "started_at": "2026-11-10T06:57:35.002248Z",
+  "finished_at": "2026-11-10T07:22:04.763648Z"
+ },
+ {
+  "agent": "claude-code",
+  "agent_version": "2.1.322",
+  "model": "claude-fable-5-2",
+  "metrics": {
+   "total_prompt_tokens": 4375650,
+   "total_completion_tokens": 129368,
+   "total_cost_usd": 8.868564200000002,
+   "total_steps": 30
+  },
+  "slug": "claude-fable-5.2",
+  "label": "Claude Fable 5.2（Claude Code）",
+  "steps": 30,
+  "images": 21,
+  "started_at": "2026-11-10T07:45:33.252421Z",
+  "finished_at": "2026-11-10T08:28:07.562673Z"
+ },
+ {
+  "agent": "claude-code",
+  "agent_version": "2.1.322",
+  "model": "claude-opus-5-5",
+  "metrics": {
+   "total_prompt_tokens": 3643950,
+   "total_completion_tokens": 116530,
+   "total_cost_usd": 4.2154218,
+   "total_steps": 32
+  },
+  "slug": "claude-opus-5.5",
+  "label": "Claude Opus 5.5（Claude Code）",
+  "steps": 32,
+  "images": 6,
+  "started_at": "2026-11-10T03:55:35.898595Z",
+  "finished_at": "2026-11-10T04:26:48.646505Z"
+ },
+ {
+  "agent": "deepseek-harness",
+  "agent_version": "dsh 0.2.2-rc.1",
+  "model": "- id: agent-default-model\n  name: '@deepseek-ai/dsh-agent-default-model'\n  config:\n    provider: deepseek-official\n    model: deepseek-flash",
+  "metrics": {},
+  "slug": "deepseek-v4.1-flash",
+  "label": "DeepSeek V4.1-Flash（DeepSeek Harness）",
+  "steps": 121,
+  "images": 0,
+  "started_at": "2026-11-10T11:01:35.891148Z",
+  "finished_at": "2026-11-10T12:37:52.236659Z"
+ },
+ {
+  "agent": "deepseek-harness",
+  "agent_version": "dsh 0.2.2-rc.1",
+  "model": "- id: agent-default-model\n  name: '@deepseek-ai/dsh-agent-default-model'\n  config:\n    provider: deepseek-official\n    model: deepseek-v4-pro",
+  "metrics": {},
+  "slug": "deepseek-v4-pro",
+  "label": "DeepSeek V4-Pro（DeepSeek Harness）",
+  "steps": 47,
+  "images": 0,
+  "started_at": "2026-11-10T09:16:24.526958Z",
+  "finished_at": "2026-11-10T09:55:49.193861Z"
+ },
+ {
+  "agent": "kimi-code",
+  "agent_version": "2.5.3",
+  "model": "kimi-k3.1-pro",
+  "metrics": {
+   "total_prompt_tokens": 2039177,
+   "total_completion_tokens": 59523,
+   "total_cost_usd": 1.3303234,
+   "total_steps": 43
+  },
+  "slug": "kimi-k3.1-pro",
+  "label": "Kimi K3.1 Pro（Kimi Code）",
+  "steps": 43,
+  "images": 11,
+  "started_at": "2026-11-10T14:34:31.870216Z",
+  "finished_at": "2026-11-10T16:05:41.502005Z"
+ }
+]

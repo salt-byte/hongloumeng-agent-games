@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent 轨迹 · 红楼梦第40回</title>
+<style>
+:root{--bg:#faf8f3;--fg:#222;--muted:#777;--card:#fff;--line:#e6e1d6;--accent:#9b2c1f;--code:#f4f1ea;--think:#f6f0e2;--res:#f3f5f7}
+@media (prefers-color-scheme:dark){:root{--bg:#191817;--fg:#e8e4dc;--muted:#9a958c;--card:#222120;--line:#3a3733;--accent:#e0806f;--code:#2a2826;--think:#2c2822;--res:#24272a}}
+*{box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif;max-width:920px;margin:32px auto;padding:0 16px;color:var(--fg);background:var(--bg);line-height:1.6}
+h1{font-size:22px;margin:0 0 4px}a{color:var(--accent)}p.note{color:var(--muted);margin:4px 0 20px;font-size:14px}
+ul.runs{padding-left:20px}ul.runs li{margin:8px 0;font-size:16px}
+.meta{color:var(--muted);font-size:13px;margin-bottom:16px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.step h3{font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:500}
+.step .src-user h3,.src-user{color:var(--accent)}
+details{margin:6px 0}summary{cursor:pointer;font-size:14px;color:var(--muted)}
+pre{white-space:pre-wrap;word-break:break-word;font:12.5px/1.5 ui-monospace,Menlo,monospace;background:var(--code);padding:8px 10px;border-radius:6px;margin:6px 0;max-height:420px;overflow:auto}
+.think pre{background:var(--think)}.res pre{background:var(--res)}
+.text{white-space:pre-wrap;word-break:break-word;font-size:15px}
+.call{font:600 13px ui-monospace,Menlo,monospace}
+img{max-width:100%;border:1px solid var(--line);border-radius:6px;margin:6px 0;display:block}
+nav{margin-bottom:12px;font-size:14px}
+</style></head>
+<body>
+<div id="app"><p class="note">加载中…</p></div>
+<script>
+const app = document.getElementById('app');
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const m = new URLSearchParams(location.search).get('m');
+const ROLE = {user:'用户 / 任务', system:'系统提示', agent:'Agent'};
+
+async function list(){
+  const runs = await (await fetch('runs.json')).json();
+  app.innerHTML = `<h1>《红楼梦》第40回 · Agent 轨迹</h1>
+  <p class="note">每个 agent 完成改编任务的完整过程：思考、调用的工具、工具返回的结果和截图。长输出已截断，本机路径已替换为 ~。<a href="../">返回游戏列表</a></p>
+  <ul class="runs">${runs.map(r=>`<li><a href="?m=${r.slug}">${esc(r.label)}</a> <span class="meta">· ${r.steps} 步 · ${r.images} 张截图</span></li>`).join('')}</ul>`;
+}
+
+function block(cls, label, body, open){
+  return `<details class="${cls}"${open?' open':''}><summary>${label}</summary>${body}</details>`;
+}
+
+async function view(slug){
+  const d = await (await fetch(slug + '/trajectory.json')).json();
+  const mt = d.meta, base = slug + '/';
+  const met = mt.metrics || {};
+  const parts = [];
+  if (mt.model) parts.push('模型 ' + esc(String(mt.model).split('\n').pop().replace(/^\s*model:\s*/,'')));
+  if (mt.agent) parts.push('外壳 ' + esc(mt.agent) + (mt.agent_version ? ' ' + esc(mt.agent_version) : ''));
+  if (met.total_cost_usd != null) parts.push('成本 $' + Number(met.total_cost_usd).toFixed(2));
+  if (mt.started_at && mt.finished_at) parts.push('用时 ' + Math.round((new Date(mt.finished_at) - new Date(mt.started_at))/60000) + ' 分钟');
+  let html = `<nav><a href="./">← 全部轨迹</a> · <a href="../${slug}/">试玩这个游戏</a></nav>
+  <h1>${esc(mt.label)}</h1><div class="meta">${parts.join(' · ')} · ${d.steps.length} 步</div>`;
+  if (slug.startsWith('deepseek')) html += `<p class="note">DeepSeek Harness 的日志没有保存截图本身，“read_image”一步只记录了读取了哪张图。</p>`;
+  d.steps.forEach((s, i) => {
+    const role = ROLE[s.source] || s.source || '';
+    let b = '';
+    if (s.thinking) b += block('think', '思考', `<pre>${esc(s.thinking)}</pre>`, false);
+    if (s.text) b += s.source === 'system' ? block('', '展开系统提示', `<pre>${esc(s.text)}</pre>`, false) : `<div class="text">${esc(s.text)}</div>`;
+    const res = {}; (s.results || []).forEach(r => { (res[r.id] = res[r.id] || []).push(r); });
+    (s.calls || []).forEach(c => {
+      b += block('', `<span class="call">▸ ${esc(c.name)}</span>`, `<pre>${esc(c.args)}</pre>`, false);
+      (res[c.id] || []).forEach(r => { b += renderRes(r, base); delete res[c.id]; });
+    });
+    Object.values(res).flat().forEach(r => b += renderRes(r, base));
+    html += `<div class="step src-${esc(s.source)}"><h3>#${i + 1} · ${esc(role)}${s.time ? ' · ' + esc(s.time.replace('T',' ').slice(0,19)) : ''}</h3>${b}</div>`;
+  });
+  app.innerHTML = html;
+  document.title = mt.label + ' · Agent 轨迹';
+}
+
+function renderRes(r, base){
+  let inner = '', imgs = '';
+  (r.parts || []).forEach(p => {
+    if (p.image) imgs += `<img loading="lazy" src="${base + p.image}" alt="截图">`;
+    else if (p.text) inner += `<pre>${esc(p.text)}</pre>`;
+  });
+  return imgs + (inner ? block('res', '结果', inner, false) : '');
+}
+
+(m ? view(m) : list()).catch(e => { app.innerHTML = '<p class="note">加载失败：' + esc(e.message) + '</p>'; });
+</script>
+</body></html>
